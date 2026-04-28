@@ -1,6 +1,9 @@
+#Este código serve para testar um modelo e analisar uma única imagem
 from ultralytics import YOLO
+#troque o caminho nesta linha pelo caminho dos pesos do modelo escolhido no seu computador
 model = YOLO("C:/Users/IFSP SRT/PycharmProjects/muriloIC/runs/detect/train3/weights/best.pt")
 
+#Selecione o caminho de uma imagem que você queira testar e a confiança
 results = model("C:/Users/IFSP SRT/PycharmProjects/muriloIC/Imagens_Dificil/Postura 1 (20230509).jpg", conf=0.6)
 results[0].show()
 
