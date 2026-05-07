@@ -1,0 +1,6 @@
+path: "C:/Users/IFSP SRT/PycharmProjects/muriloIC/datasetV11"
+train: "train/"
+val: "valid/"
+
+nc: 3
+names: ['2 eggs', '3 eggs', 'egg']

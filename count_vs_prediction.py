@@ -1,19 +1,26 @@
-#Este código serve para testar um único modelo e verificar os resultados encontrados pelo
-#modelo são próximos dos resultados encontrados por um ser humano.
-#Os resultados são armazenados em um arquivo "contagem_vs_predicao.txt" que deve ser salvo
-#na mesma pasta do código
-
+#Warning: These libraries must be installed for this code to work
 import os
 from ultralytics import YOLO
 
-#troque o caminho nesta linha pelo caminho dos pesos do modelo escolhido no seu computador
-model = YOLO("C:/Users/IFSP SRT/PycharmProjects/muriloIC/runs/detect/train/weights/best.pt") 
+#General
+#This code is used to test a single model and verify if the results 
+#predicted by the model are close to the results counted by a human.
+#The results are stored in a file "count_vs_prediction.txt" 
+#which must be saved in the same folder as the code.
 
-folder_txt = 'datasetV11/valid/labels' #troque para o caminho do seu dataset
-folder_img = 'datasetV11/valid/images' #troque para o caminho do seu dataset
+#Parameters you must configure:
+#1 - Path for the weights of the model. 
+model = YOLO("Insert here the path for the weights of the model - best.pt") 
 
-with open('contagem_vs_predicao.txt', 'w', encoding='utf-8') as save_file:
-    save_file.write(f"") # clear file
+#2 - Path for the dataset of valid images you want to test (images and annotations)
+folder_img = 'Insert here the path to the dataset`s image folder'
+folder_txt = 'Insert here the path to the dataset`s annotation folder' 
+
+#3 - Value for confidence (must be a number between 0 and 1)
+selected_confidence = 0.5 #Example: 0.5
+
+with open('count_vs_prediction.txt', 'w', encoding='utf-8') as save_file:
+    save_file.write(f"") 
 
 for file_name in os.listdir(folder_txt):
     if file_name.endswith('.txt'):
@@ -28,7 +35,7 @@ for file_name in os.listdir(folder_txt):
         try:
             with open(complete_path_txt, 'r', encoding='utf-8') as file:
                 for line in file:
-                    if line.strip(): # linha não está vazia
+                    if line.strip(): 
                         if (int(line[0]) == 0):
                             confirmed_total = confirmed_total + 2
                             confirmed_2_egg = confirmed_2_egg + 1
@@ -39,15 +46,14 @@ for file_name in os.listdir(folder_txt):
                             confirmed_total = confirmed_total + 1
                             confirmed_1_egg = confirmed_1_egg + 1
                 print(f"{confirmed_total} eggs")
-                with open('contagem_vs_predicao.txt', 'a', encoding='utf-8') as save_file:
-                    save_file.write(f"arquivo {file_name}\n")
-                    save_file.write(f"Foram contados {confirmed_total} ovos\n")
+                with open('count_vs_prediction.txt', 'a', encoding='utf-8') as save_file:
+                    save_file.write(f"file {file_name}\n")
+                    save_file.write(f"{confirmed_total} eggs were counted\n")
                     save_file.write(f"1_Egg: {confirmed_1_egg}; 2_Eggs: {confirmed_2_egg}; 3_Eggs {confirmed_3_egg}\n")
 
         except Exception as e:
             print(f"Error in {file_name}: {e}")
 
-    selected_confidence = 0.5 #Selecione a confiança que você quer para o teste
     results = model(complete_path_img, conf=selected_confidence)
     predicted_total = 0
     predicted_1_egg = 0
@@ -64,7 +70,6 @@ for file_name in os.listdir(folder_txt):
         else:
             predicted_total = predicted_total + 1
             predicted_1_egg = predicted_1_egg + 1
-    print(f"The model identified: {predicted_total} eggs")
-    with open('contagem_vs_predicao.txt','a',encoding='utf-8') as save_file:
-        save_file.write(f"Modelo identificou {predicted_total} ovos com confiança {selected_confidence}\n")
+    with open('count_vs_prediction.txt','a',encoding='utf-8') as save_file:
+        save_file.write(f"Model identified {predicted_total} eggs with confidence {selected_confidence}\n")
         save_file.write(f"1_Egg: {predicted_1_egg}; 2_Eggs: {predicted_2_egg}; 3_Eggs {predicted_3_egg}\n\n")
