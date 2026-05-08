@@ -8,13 +8,13 @@ import torchvision
 model = YOLO("yolo11l.pt")
 
 results = model.train(
-        data='config.yaml',  # Caminho do arquivo
+        data='config.yaml',  # path of the configuration file
         epochs=6000,
         workers=0,
-        batch=8 ,            # Tinha tentando com 64, mas acabou a RAM da GPU
-        imgsz=640,           # 640px
-        device=0,             # GPU
-        pretrained = False,  # Começar um modelo do zero
+        batch=8 ,            # size of the batch
+        imgsz=640,           # each image has 640x640 pixels
+        device=0,            # GPU
+        pretrained = False,  # Start the model from zero
     )
 
-print("Treinamento concluído.")
+print("Training completed.")

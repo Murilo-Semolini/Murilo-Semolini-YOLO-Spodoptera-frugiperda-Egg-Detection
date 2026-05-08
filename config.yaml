@@ -1,6 +1,6 @@
-path: "C:/Users/IFSP SRT/PycharmProjects/muriloIC/datasetV11"
-train: "train/"
-val: "valid/"
+path: "C:/Users/IFSP SRT/PycharmProjects/muriloIC/datasetV11" #Path for the folder with the dataset
+train: "train/" #folder of images for the training
+val: "valid/" #folder of images for validation
 
 nc: 3
 names: ['2 eggs', '3 eggs', 'egg']

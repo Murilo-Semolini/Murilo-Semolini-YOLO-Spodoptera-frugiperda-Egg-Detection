@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['2 eggs', '3 eggs', 'egg']
+
+roboflow:
+  workspace: ovos-lagarta
+  project: my-first-project-jf2zk
+  version: 6
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ovos-lagarta/my-first-project-jf2zk/dataset/6
