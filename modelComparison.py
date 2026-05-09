@@ -4,7 +4,7 @@ from ultralytics import YOLO
 
 #General
 #This code is used to compare the performance of all models in one go.
-#It analyzes an entire dataset that should already be annotated.
+#It analyzes an entire  image folder that should already be annotated.
 #This allows for a comparison of the results of each model with those annotated by a human.
 #The tests are performed with 2 confidence levels: 1 low and 1 high.
 #The results are saved in the "modelComparison.txt" file that must be saved in the same folder as this code.
