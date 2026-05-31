@@ -155,3 +155,9 @@ The training process is defined in:
 * `config.yaml`
 
 These files contain the code and parameters used to start and configure the YOLO training process.
+
+---
+
+# New Models
+
+New models were trained and added to the project using a revised version of the dataset and testing more parameters. The `new models` folder contains the new models and their metrics, the datasets used and a txt document reporting the training parameter used in each version.
