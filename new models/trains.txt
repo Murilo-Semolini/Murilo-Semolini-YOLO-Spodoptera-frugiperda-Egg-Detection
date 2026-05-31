@@ -1,0 +1,154 @@
+Train 1: Made with artificial samples using the datased_V11_2 and the following parameters:
+        data='config.yaml', 
+        epochs=1000,      
+        patience=50,
+        save=True,
+        device = 0,
+        workers=2,          
+        optimizer='AdamW',
+        lr0=0.0005,
+        weight_decay=0.0005,
+        seed = 42,
+        momentum=0.937,
+        warmup_epochs=5.0,
+        warmup_momentum=0.8,
+        warmup_bias_lr=0.1,
+        close_mosaic=20,
+        mosaic=0.5,
+        batch=4,              
+        imgsz=960,             
+        pretrained = True,    
+        scale=0.3,
+        cos_lr=True,
+        amp = True,
+        hsv_h=0.005,
+        hsv_s=0.2,
+        hsv_v=0.1,
+        plots=True,
+        dropout=0.05
+Note: The F1-score is very similar to the previous model 3. Little overall improvement was made
+
+Train 2: Same parameters as train 1, but made without artificial samples, using dataset_V11_without_samples
+Note: The results were a lot worse. They deteriorate in a much lower confidence threshold and never are as
+precise.
+
+Treino 3: Made with artificial samples using the datased_V11_2 and the following parameters:
+        data='config.yaml',     
+        epochs=1000,            
+        patience=50,
+        save=True,
+        device = 0,
+        workers=2,              
+        optimizer='AdamW',
+        lr0=0.001,
+        weight_decay=0.001,
+        seed = 42,
+        momentum=0.937,
+        warmup_epochs=5.0,
+        warmup_momentum=0.8,
+        warmup_bias_lr=0.1,
+        close_mosaic=20,
+        mosaic=0.5,
+        batch=8,               
+        imgsz=640,            
+        pretrained = True,     
+        scale=0.2,
+        cos_lr=True,
+        amp = True,
+        hsv_h=0.01,
+        hsv_s=0.3,
+        hsv_v=0.2,
+        dropout=0.1
+
+Nota: Compared to Model 1, this model achieves a lower peak F1-score (it appears to be having more 
+issues with either recall or precision). However, the score can tolerate a higher confidence threshold 
+before deteriorating completely.
+
+Treino 4: Same parameters as train 3, but made without artificial samples, using 
+dataset_V11_without_samples
+Nota: The metrics decreased, just like in the model 2.
+
+Treino 5: Train 1 but with pre-train disabled to verify if the results deteriorate
+Nota: The metrics remained almost the same; there was very little change.
+
+Treino 6: Stress test with artifical samples using datased_V11_2. 
+Several values were modified and set far above their default values, especially the 
+augmentation settings and hyperparameters. The weight assigned to correct box 
+classification in the loss function was increased, while the weight assigned to precise 
+box localization was decreased. The parameters are as follows:
+        data='config.yaml', 
+        epochs=1000,      
+        patience=50,
+        save=True,
+        device = 0,
+        workers=2,          
+        optimizer='AdamW',
+        lr0=0.0005,
+        weight_decay=0.0005,
+        seed = 42,
+        momentum=0.937,
+        warmup_epochs=5.0,
+        warmup_momentum=0.8,
+        warmup_bias_lr=0.1,
+        close_mosaic=20,
+        mosaic=1,
+        batch=8,              
+        imgsz=640,             
+        pretrained = True, 
+        cls = 1,
+        box = 5,
+        scale=1,
+        cos_lr=True,
+        amp = True,
+        hsv_h=0.03,
+        hsv_s=1.4,
+        hsv_v=0.8,
+        degrees = 30,
+        translate = 0.3,
+        shear = 30,
+        perspective = 0.0005,
+        flipud = 0.03,
+        fliplr = 0.7,
+        brg = 0.05,
+        mixup = 0.3,
+        cutmix = 0.3,
+        copy_paste = 0.2,
+        copy_paste_mode = 'mixup',
+        auto_augment = 'autoaugment',
+        erasing = 0.6,
+        plots=True,
+        dropout=0.05,
+Nota: The metrics were not very good. The first model is still better
+
+Treino 7: Performed using artificial samples and the parameters from 
+the first training run, with modified values for cls and box:
+        data='config.yaml', 
+        epochs=1000,      
+        patience=50,
+        save=True,
+        device = 0,
+        workers=2,          
+        optimizer='AdamW',
+        lr0=0.0005,
+        weight_decay=0.0005,
+        seed = 42,
+        cls = 1,
+        box = 5,
+        momentum=0.937,
+        warmup_epochs=5.0,
+        warmup_momentum=0.8,
+        warmup_bias_lr=0.1,
+        close_mosaic=20,
+        mosaic=0.5,
+        batch=4,              
+        imgsz=960,             
+        pretrained = True,    
+        scale=0.3,
+        cos_lr=True,
+        amp = True,
+        hsv_h=0.005,
+        hsv_s=0.2,
+        hsv_v=0.1,
+        plots=True,
+        dropout=0.05
+Nota: There seems to have been an improvement. Nothing particularly significant, but the F1score is better.
