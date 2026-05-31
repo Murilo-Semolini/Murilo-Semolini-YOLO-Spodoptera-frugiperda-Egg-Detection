@@ -157,7 +157,6 @@ The training process is defined in:
 These files contain the code and parameters used to start and configure the YOLO training process.
 
 ---
----
 
 # New Models
 
