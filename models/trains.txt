@@ -32,7 +32,7 @@ Train 2: Same parameters as train 1, but made without artificial samples, using 
 Note: The results were a lot worse. They deteriorate in a much lower confidence threshold and never are as
 precise.
 
-Treino 3: Made with artificial samples using the datased_V11_2 and the following parameters:
+Train 3: Made with artificial samples using the datased_V11_2 and the following parameters:
         data='config.yaml',     
         epochs=1000,            
         patience=50,
@@ -60,18 +60,18 @@ Treino 3: Made with artificial samples using the datased_V11_2 and the following
         hsv_v=0.2,
         dropout=0.1
 
-Nota: Compared to Model 1, this model achieves a lower peak F1-score (it appears to be having more 
+Note: Compared to Model 1, this model achieves a lower peak F1-score (it appears to be having more 
 issues with either recall or precision). However, the score can tolerate a higher confidence threshold 
 before deteriorating completely.
 
-Treino 4: Same parameters as train 3, but made without artificial samples, using 
+Train 4: Same parameters as train 3, but made without artificial samples, using 
 dataset_V11_without_samples
-Nota: The metrics decreased, just like in the model 2.
+Note: The metrics decreased, just like in the model 2.
 
-Treino 5: Train 1 but with pre-train disabled to verify if the results deteriorate
-Nota: The metrics remained almost the same; there was very little change.
+Train 5: Train 1 but with pre-train disabled to verify if the results deteriorate
+Note: The metrics remained almost the same; there was very little change.
 
-Treino 6: Stress test with artifical samples using datased_V11_2. 
+Train 6: Stress test with artifical samples using datased_V11_2. 
 Several values were modified and set far above their default values, especially the 
 augmentation settings and hyperparameters. The weight assigned to correct box 
 classification in the loss function was increased, while the weight assigned to precise 
@@ -118,9 +118,9 @@ box localization was decreased. The parameters are as follows:
         erasing = 0.6,
         plots=True,
         dropout=0.05,
-Nota: The metrics were not very good. The first model is still better
+Note: The metrics were not very good. The first model is still better
 
-Treino 7: Performed using artificial samples and the parameters from 
+Train 7: Performed using artificial samples and the parameters from 
 the first training run, with modified values for cls and box:
         data='config.yaml', 
         epochs=1000,      
@@ -151,4 +151,4 @@ the first training run, with modified values for cls and box:
         hsv_v=0.1,
         plots=True,
         dropout=0.05
-Nota: There seems to have been an improvement. Nothing particularly significant, but the F1score is better.
+Note: Nothing particularly significant happened, but the F1score is better in some points.
