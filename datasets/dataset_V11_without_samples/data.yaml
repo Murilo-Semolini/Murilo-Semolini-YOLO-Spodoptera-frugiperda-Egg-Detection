@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['2 eggs', '3 eggs', 'egg']
+
+roboflow:
+  workspace: ovos-lagarta
+  project: ovos-lagarta
+  version: dataset
+  license: Private
+  url: https://app.roboflow.com/ovos-lagarta/ovos-lagarta/dataset
