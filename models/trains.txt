@@ -1,4 +1,4 @@
-Train 1: Made with artificial samples using the datased_V11_2 and the following parameters:
+Train 1: Made with artificial samples using the dataset_V11_2 and the following parameters:
         data='config.yaml', 
         epochs=1000,      
         patience=50,
@@ -28,7 +28,7 @@ Train 1: Made with artificial samples using the datased_V11_2 and the following 
         dropout=0.05
 Note: The F1-score is very similar to the previous model 3. Little overall improvement was made
 
-Train 2: Same parameters as train 1, but made without artificial samples, using dataset_V11_without_samples
+Train 2: Same parameters as train 1, but made without artificial samples, using dataset_V11_without_data_aug
 Note: The results were a lot worse. They deteriorate in a much lower confidence threshold and never are as
 precise.
 
@@ -65,7 +65,7 @@ issues with either recall or precision). However, the score can tolerate a highe
 before deteriorating completely.
 
 Train 4: Same parameters as train 3, but made without artificial samples, using 
-dataset_V11_without_samples
+dataset_V11_without_data_aug
 Note: The metrics decreased, just like in the model 2.
 
 Train 5: Train 1 but with pre-train disabled to verify if the results deteriorate
