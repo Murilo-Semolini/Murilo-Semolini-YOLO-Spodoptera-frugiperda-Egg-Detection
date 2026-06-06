@@ -13,7 +13,7 @@ cache: false
 device: '0'
 workers: 2
 project: null
-name: train-3
+name: train-4
 exist_ok: false
 pretrained: true
 optimizer: AdamW
@@ -107,4 +107,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: C:\Users\CEPIN-IFSP\PycharmProjects\MuriloIc\runs\detect\train-3
+save_dir: C:\Users\CEPIN-IFSP\PycharmProjects\MuriloIc\runs\detect\train-4
