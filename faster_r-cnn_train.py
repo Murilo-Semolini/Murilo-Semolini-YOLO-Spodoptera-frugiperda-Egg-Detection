@@ -1,6 +1,6 @@
 import os
-import cv2
 import json
+import cv2
 import torch
 import torchvision
 
@@ -8,28 +8,38 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.transforms import functional as F
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
-
+import torchvision.transforms.v2 as T
 from tqdm import tqdm
+from datetime import datetime
 
 
 # =========================
 # CONFIGURAÇÕES
 # =========================
 
-TRAIN_IMAGES = "dataset/train/images"
-TRAIN_JSON   = "dataset/train/annotations.json"
+TRAIN_IMAGES = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\\MuriloIC_FasterRcnn\\dataset coco com split de testes\\train\\images"
+TRAIN_JSON   = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\MuriloIC_FasterRcnn\\dataset coco com split de testes\\train\\_annotations.coco.json"
 
-VAL_IMAGES   = "dataset/val/images"
-VAL_JSON     = "dataset/val/annotations.json"
+VAL_IMAGES   = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\\MuriloIC_FasterRcnn\\dataset coco com split de testes\\valid\\images"
+VAL_JSON     = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\\MuriloIC_FasterRcnn\\dataset coco com split de testes\\valid\\_annotations.coco.json"
+
+TEST_IMAGES = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\\MuriloIC_FasterRcnn\\dataset coco com split de testes\\test\\images"
+TEST_JSON   = "C:\\Users\\CEPIN-IFSP\\PycharmProjects\\MuriloIC_FasterRcnn\\dataset coco com split de testes\\test\\_annotations.coco.json"
 
 NUM_CLASSES  = 4       # fundo (0) + suas classes
 BATCH_SIZE   = 8
-NUM_EPOCHS   = 6000
+NUM_EPOCHS   = 150
 LEARNING_RATE = 0.0005
-NUM_WORKERS  = 0      # ajuste conforme CPUs disponíveis
+NUM_WORKERS  = 0     # ajuste conforme CPUs disponíveis
 
 DEVICE    = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-SAVE_PATH = "faster_rcnn_model.pth"
+
+timestamp  = datetime.now().strftime("%Y%m%d_%H%M%S")
+RUN_DIR    = os.path.join("runs", "train", f"exp_{timestamp}")
+os.makedirs(RUN_DIR, exist_ok=True)
+SAVE_PATH  = os.path.join(RUN_DIR, "best.pth")
+LOG_PATH   = os.path.join(RUN_DIR, "results.txt")
+print(f"Salvando experimento em: {RUN_DIR}")
 
 
 # =========================
@@ -38,9 +48,9 @@ SAVE_PATH = "faster_rcnn_model.pth"
 
 class CocoDataset(Dataset):
 
-    def __init__(self, images_dir, annotation_file):
+    def __init__(self, images_dir, annotation_file, transforms=None):  # ← adiciona transforms
         self.images_dir = images_dir
-
+        self.transforms = transforms                                    # ← guarda
         with open(annotation_file) as f:
             self.coco = json.load(f)
 
@@ -100,9 +110,21 @@ class CocoDataset(Dataset):
         }
 
         image = F.to_tensor(image)
-
+        if self.transforms:
+            image, target = self.transforms(image, target)  # ← aplica
         return image, target
 
+# =========================
+# TRANSFORMS FOR DATA AUGMENTATION
+# =========================
+
+def get_train_transforms():
+    return T.Compose([
+        T.RandomHorizontalFlip(p=0.5),
+        T.RandomVerticalFlip(p=0.2),
+        T.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.2),
+        T.ToDtype(torch.float32, scale=True),
+    ])
 
 # =========================
 # COLLATE FUNCTION
@@ -116,8 +138,9 @@ def collate_fn(batch):
 # DATASETS E DATALOADERS
 # =========================
 
-train_dataset = CocoDataset(TRAIN_IMAGES, TRAIN_JSON)
-val_dataset   = CocoDataset(VAL_IMAGES,   VAL_JSON)
+train_dataset = CocoDataset(TRAIN_IMAGES, TRAIN_JSON, transforms=get_train_transforms())
+val_dataset = CocoDataset(VAL_IMAGES,   VAL_JSON)
+test_dataset = CocoDataset(TEST_IMAGES, TEST_JSON)
 
 train_loader = DataLoader(
     train_dataset,
@@ -137,12 +160,21 @@ val_loader = DataLoader(
     pin_memory=True,
 )
 
+test_loader = DataLoader(
+    test_dataset,
+    batch_size=BATCH_SIZE,
+    shuffle=False,
+    collate_fn=collate_fn,
+    num_workers=NUM_WORKERS,
+    pin_memory=True,
+)
+
 
 # =========================
 # MODELO
 # =========================
 
-model = fasterrcnn_resnet50_fpn(weights="DEFAULT")
+model = fasterrcnn_resnet50_fpn(weights="DEFAULT", box_nms_thresh=0.3)
 
 in_features = model.roi_heads.box_predictor.cls_score.in_features
 
@@ -163,18 +195,18 @@ model.to(DEVICE)
 # FIX: SGD com momentum é o padrão para detecção de objetos
 params = [p for p in model.parameters() if p.requires_grad]
 
-optimizer = torch.optim.SGD(
+optimizer = torch.optim.Adam(
     params,
-    lr=LEARNING_RATE,
-    momentum=0.9,
+    lr=0.0001,           # ← Adam usa LR menor que SGD
     weight_decay=0.0005,
 )
 
 # FIX: scheduler reduz LR nas épocas 10 e 16
-lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
+lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer,
-    milestones=[10, 16],
-    gamma=0.1,
+    mode="max",      # maximiza o mAP
+    factor=0.1,      # reduz LR para 10% quando estagna
+    patience=10,     # espera 10 épocas sem melhora
 )
 
 
@@ -189,7 +221,10 @@ def evaluate(model, data_loader, device):
     """
     model.eval()
 
-    metric = MeanAveragePrecision(iou_type="bbox")
+    metric = MeanAveragePrecision(
+        iou_type="bbox",
+        backend="faster_coco_eval"
+    )
 
     with torch.no_grad():
         for images, targets in tqdm(data_loader, desc="Validando"):
@@ -226,6 +261,12 @@ def evaluate(model, data_loader, device):
 
 best_map = 0.0
 
+PATIENCE_EARLY_STOP = 30     
+epochs_no_improve = 0
+
+with open(LOG_PATH, "w") as f:
+    f.write("epoch,loss,mAP,mAP50,mAP75,lr\n")
+
 for epoch in range(NUM_EPOCHS):
 
     # ---------- TREINO ----------
@@ -252,9 +293,8 @@ for epoch in range(NUM_EPOCHS):
         progress_bar.set_postfix(loss=f"{loss_value:.4f}")
 
     avg_loss = epoch_loss / len(train_loader)
-    print(f"\nEpoch {epoch+1} | Loss médio: {avg_loss:.4f} | LR: {lr_scheduler.get_last_lr()}")
-
-    lr_scheduler.step()   # FIX: atualiza o LR após cada época
+    current_lr = optimizer.param_groups[0]['lr']
+    print(f"Epoch {epoch+1} | Loss médio: {avg_loss:.4f} | LR: {current_lr}")
 
     # ---------- VALIDAÇÃO ----------
     metrics = evaluate(model, val_loader, DEVICE)
@@ -262,6 +302,12 @@ for epoch in range(NUM_EPOCHS):
     map_val    = metrics["map"].item()
     map_50_val = metrics["map_50"].item()
     map_75_val = metrics["map_75"].item()
+
+    with open(LOG_PATH, "a") as f:
+        f.write(f"{epoch+1},{avg_loss:.4f},{map_val:.4f},"
+            f"{map_50_val:.4f},{map_75_val:.4f},{current_lr}\n")
+
+    lr_scheduler.step(map_val)
 
     print(
         f"Validação | mAP: {map_val:.4f} | "
@@ -271,11 +317,26 @@ for epoch in range(NUM_EPOCHS):
     # salva o melhor modelo
     if map_val > best_map:
         best_map = map_val
+        epochs_no_improve = 0
         torch.save(model.state_dict(), SAVE_PATH)
         print(f"  → Melhor modelo salvo (mAP={best_map:.4f})")
+    else:
+        epochs_no_improve += 1
+        print(f"  → Sem melhora há {epochs_no_improve}/{PATIENCE_EARLY_STOP} épocas")
+        if epochs_no_improve >= PATIENCE_EARLY_STOP:
+            print(f"\nEarly stopping na época {epoch+1}. Melhor mAP: {best_map:.4f}")
+            break
+
+    print(f"\nExperimento salvo em: {RUN_DIR}")
 
     print("-" * 60)
 
+print("\nAvaliando no conjunto de teste...")
 
-print(f"\nTreinamento concluído. Melhor mAP: {best_map:.4f}")
-print(f"Modelo salvo em: {SAVE_PATH}")
+model.load_state_dict(torch.load(SAVE_PATH))
+
+test_metrics = evaluate(model, test_loader, DEVICE)
+
+print(f"TEST mAP: {test_metrics['map']:.4f}")
+print(f"TEST mAP@50: {test_metrics['map_50']:.4f}")
+print(f"TEST mAP@75: {test_metrics['map_75']:.4f}")
