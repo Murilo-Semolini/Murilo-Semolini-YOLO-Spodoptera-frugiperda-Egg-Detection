@@ -8,10 +8,10 @@ import numpy as np
 # CONFIGURAÇÕES
 # =========================
 DEVICE     = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-SAVE_PATH  = "faster_rcnn_model.pth"
-IMAGE_PATH = "sua_imagem.jpg"       # ← troque pelo caminho da imagem
+SAVE_PATH  = "C:\\Users\\semol\\Documents\\faculdade 2025\\Iniciação científica\\dataset coco com split de testes\\faster_rcnn_model.pth"
+IMAGE_PATH = "C:\\Users\\semol\\Documents\\faculdade 2025\\Iniciação científica\\dataset coco com split de testes\\train\\images\\Postura-3-20230516-_jpg.rf.36cf4d9b20a1b44de30ae9292041f9bb.jpg"       # ← troque pelo caminho da imagem
 NUM_CLASSES = 4
-SCORE_THRESHOLD = 0.5               # ignora detecções com confiança abaixo disso
+SCORE_THRESHOLD = 0.4               # ignora detecções com confiança abaixo disso
 
 CATEGORY_NAMES = {
     1: "2 eggs",
