@@ -149,15 +149,11 @@ The results are not saved to a file.
 
 # Training
 
-The training process is defined in:
+The training process was made through the files:
 
 * `mainCode`
 * `config.yaml`
 
-These files contain the code and parameters used to start and configure the YOLO training process.
+These files contain the base code used to start and configure the YOLO training process, but for each training new parameters were set. The list of alterations made for each model can be foun in `train parameters.txt`.
 
 ---
-
-# New Models
-
-New models were trained and added to the project using a revised version of the dataset and testing more parameters. The `new models` folder contains the new models and their metrics, the datasets used and a txt document reporting the training parameter used in each version.
