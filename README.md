@@ -98,7 +98,7 @@ This file must be located in the same folder as the script.
 
 ---
 
-## `modelComparison`
+## `allModelComparison`
 
 Compares the performance of all trained models at once.
 
@@ -106,15 +106,12 @@ The script:
 
 * Analyzes an entire annotated image folder
 * Compares model predictions with human annotations
-* Performs tests using two confidence levels:
-
-  * One low confidence threshold
-  * One high confidence threshold
+* Performs tests using multiple confidence levels
 
 The results are saved in:
 
 ```text
-modelComparison.txt
+allModelComparison.txt
 ```
 
 This file must be located in the same folder as the script.
