@@ -16,7 +16,7 @@ The repository contains:
 * The image dataset used during training and validation
 * Training configuration files and parameters
 
-Among the available models, `model_2` and `model_4` achieved the best overall performance.
+Among the available models, `model_3` and `model_4` achieved the best overall performance.
 
 In a simple way, the main difference between each model is
 |model|Data aug|Pretrained|                     Main difference                      |
