@@ -40,7 +40,41 @@ precise.
 ================================================================================================
 ------------------------------------------------------------------------------------------------
 
-Train 2: Made with artificial samples using the dataset_V11_2 and the following parameters:
+Train 2: Made without artificial samples using the dataset_V11_without_data_aug and the following 
+parameters:
+        data='config.yaml',     
+        epochs=1000,            
+        patience=50,
+        save=True,
+        device = 0,
+        workers=2,              
+        optimizer='AdamW',
+        lr0=0.001,
+        weight_decay=0.001,
+        seed = 42,
+        momentum=0.937,
+        warmup_epochs=5.0,
+        warmup_momentum=0.8,
+        warmup_bias_lr=0.1,
+        close_mosaic=20,
+        mosaic=0.5,
+        batch=8,               
+        imgsz=640,            
+        pretrained = True,     
+        scale=0.2,
+        cos_lr=True,
+        amp = True,
+        hsv_h=0.01,
+        hsv_s=0.3,
+        hsv_v=0.2,
+        dropout=0.1
+Note: The metrics are similar to model 1 and not very good.
+
+------------------------------------------------------------------------------------------------
+================================================================================================
+------------------------------------------------------------------------------------------------
+
+Train 3: Made with artificial samples using the dataset_V11_2 and the same parameters as model 2:
         data='config.yaml',     
         epochs=1000,            
         patience=50,
@@ -74,16 +108,9 @@ Note: By looking at the F1-score graph, this model seems to achieve much better 
 ================================================================================================
 ------------------------------------------------------------------------------------------------
 
-Train 3: Same parameters as train 2, but made without artificial samples, using 
-dataset_V11_without_data_aug
-Note: The metrics decreased and are kinda similar to model 1.
-
-------------------------------------------------------------------------------------------------
-================================================================================================
-------------------------------------------------------------------------------------------------
-
-Train 4: Train 1 but with artifical samples and pre-train disabled so it can create a model from 0
-Note: The metrics are a lot better, and somewhat similar to model 2.
+Train 4: Train 1 but with artifical samples, using dataset_V11_2, and pre-train disabled so it can 
+create a model from 0
+Note: The metrics are a lot better than model 1, but somewhat similar to model 3.
 
 ------------------------------------------------------------------------------------------------
 ================================================================================================

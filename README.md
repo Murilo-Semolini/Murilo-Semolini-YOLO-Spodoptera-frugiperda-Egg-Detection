@@ -24,8 +24,8 @@ In a simple way, the main difference between each model is
 |  1  |   No   |    Yes   |               imgsz=960, batch=4, scale=0.3              |
 |  4  |   Yes  |    No    |             hsv_h=0.005, hsv_s=0.2, hsv_v=0.1,           |
 |-----|--------|----------|----------------------------------------------------------|
-|  2  |   Yes  |    Yes   |               imgsz=640, batch=8, scale=0.2              |
-|  3  |   No   |    Yes   |              hsv_h=0.01, hsv_s=0.3, hsv_v=0.2,           |
+|  2  |   No   |    Yes   |               imgsz=640, batch=8, scale=0.2              |
+|  3  |   Yes  |    Yes   |              hsv_h=0.01, hsv_s=0.3, hsv_v=0.2,           |
 |-----|--------|----------|----------------------------------------------------------|
 |  5  |   Yes  |    Yes   |Stress test. A lot of parameters were increased way above |
 |     |        |          |       the normal numbers. See `train parameters.txt`     |
