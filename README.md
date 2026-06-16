@@ -11,12 +11,26 @@ The models are capable of:
 
 The repository contains:
 
-* Three trained YOLO models (`model_1`, `model_2`, `model_3`)
+* Six trained YOLO models (`model_1`, `model_2`, `model_3`, `model_4`, `model_5`, `model_6`)
 * Test and evaluation scripts
 * The image dataset used during training and validation
 * Training configuration files and parameters
 
-Among the available models, `model_3` achieved the best overall performance.
+Among the available models, `model_2` and `model_4` achieved the best overall performance.
+
+In a simple way, the main difference between each model is
+|model|Data aug|Pretrained|                     Main difference                      |
+|-----|--------|----------|----------------------------------------------------------|
+|  1  |   No   |    Yes   |               imgsz=960, batch=4, scale=0.3              |
+|  4  |   Yes  |    No    |             hsv_h=0.005, hsv_s=0.2, hsv_v=0.1,           |
+|-----|--------|----------|----------------------------------------------------------|
+|  2  |   Yes  |    Yes   |               imgsz=640, batch=8, scale=0.2              |
+|  3  |   No   |    Yes   |              hsv_h=0.01, hsv_s=0.3, hsv_v=0.2,           |
+|-----|--------|----------|----------------------------------------------------------|
+|  5  |   Yes  |    Yes   |Stress test. A lot of parameters were increased way above |
+|     |        |          |       the normal numbers. See `train parameters.txt`     |
+|-----|--------|----------|----------------------------------------------------------|
+|  6  |   Yes  |    Yes   |         cls=1, box=5. Focus on box classification        |
 
 ---
 
