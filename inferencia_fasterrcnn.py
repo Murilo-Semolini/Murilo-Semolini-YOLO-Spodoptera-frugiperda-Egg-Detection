@@ -8,8 +8,8 @@ import numpy as np
 # CONFIGURAÇÕES
 # =========================
 DEVICE     = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-SAVE_PATH  = "C:\\Users\\semol\\Documents\\faculdade 2025\\Iniciação científica\\dataset coco com split de testes\\faster_rcnn_model.pth"
-IMAGE_PATH = "C:\\Users\\semol\\Documents\\faculdade 2025\\Iniciação científica\\dataset coco com split de testes\\train\\images\\Postura-3-20230516-_jpg.rf.36cf4d9b20a1b44de30ae9292041f9bb.jpg"       # ← troque pelo caminho da imagem
+SAVE_PATH  = "C:\\Users\\semol\\Documents\\faculdade 2025\\Iniciação científica\\redes e códigos\\faster_rcnn_model.pth"
+IMAGE_PATH = r"C:\Users\semol\Documents\faculdade 2025\Iniciação científica\redes e códigos\dataset coco com split de testes\test\images\Postura-5-20230518-_jpg.rf.b7dbe7d4527f2c462b56ad3887ee7746.jpg"
 NUM_CLASSES = 4
 SCORE_THRESHOLD = 0.4               # ignora detecções com confiança abaixo disso
 
@@ -34,7 +34,14 @@ model.eval()
 # =========================
 # CARREGANDO E PREPARANDO A IMAGEM
 # =========================
-image_bgr = cv2.imread(IMAGE_PATH)
+with open(IMAGE_PATH, "rb") as f:
+    file_bytes = np.frombuffer(f.read(), dtype=np.uint8)
+
+image_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+if image_bgr is None:
+    raise ValueError("OpenCV não conseguiu decodificar a imagem.")
+
 image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 image_tensor = F.to_tensor(image_rgb).to(DEVICE)
 
@@ -64,8 +71,8 @@ for box, label, score in zip(boxes, labels, scores):
 
     # desenha a caixa e o texto
     cv2.rectangle(result, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    cv2.putText(result, text, (x1, y1 - 8),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+    #cv2.putText(result, text, (x1, y1 - 8),
+                #cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 # =========================
 # SALVANDO O RESULTADO
